@@ -192,7 +192,14 @@ for query in queries:
         profile = Profile.from_username(L.context, query)
         posts = profile.get_posts()
     if target == 'hashtag':
-        posts = L.get_hashtag_posts(query)
+        # posts = L.get_hashtag_posts(query)
+        posts = instaloader.NodeIterator(
+            L.context, "9b498c08113f1e09617a1703c22b2f32",
+            lambda d: d['data']['hashtag']['edge_hashtag_to_media'],
+            lambda n: instaloader.Post(L.context, n),
+            {'tag_name': query},
+            f"https://www.instagram.com/explore/tags/{query}/"
+        )
     if target == 'location id':
         posts = L.get_location_posts(query)
 
