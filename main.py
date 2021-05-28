@@ -42,8 +42,8 @@ def do_login(L):
     username = input('What is your Instagram username?')
     try:
         L.interactive_login(username)
-    except:
-        print("Provided username does not exist.. Try again.\n")
+    except Exception as err:
+        print(err)
         do_login(L)
         
 
@@ -223,13 +223,27 @@ for query in queries:
 
             print(f'\nNow harvesting {query}. Ctrl-C to stop.\n\n')
             for post in posts:
-                L.download_post(post, target=query)
-                post_info = [getattr(post, attr) for attr in post_attr]
 
-                # Put postinfo in dataframe
-                data = data.append(pd.Series(
-                    dict(zip(data.columns, post_info))),
-                                   ignore_index=True)
+                try:
+                    L.download_post(post, target=query)
+                    post_info = []
+                    for attr in post_attr:
+                        attribute = ''
+                        try:
+                            attribute = getattr(post, attr)
+                        except:
+                            print(f'\n Could not get {attr} for a post...')
+                        else:
+                            post_info.append(attribute)
+
+
+                    # Put postinfo in dataframe
+                    data = data.append(pd.Series(
+                        dict(zip(data.columns, post_info))),
+                                    ignore_index=True)
+                except:
+                    print("Error!")
+                
 
                 # Get comments
                 if get_comments and post.comments > 0:
