@@ -127,6 +127,9 @@ if 'thumbnails' in selected:
 else:
     thumbnails = False
 
+# Do you want comments
+get_comments = query_yes_no("Do you want download comments?", default="yes")
+
 # Do you want to compress?
 compress = query_yes_no("Do you want to compress jsons?", default="yes")
 
@@ -229,7 +232,7 @@ for query in queries:
                                    ignore_index=True)
 
                 # Get comments
-                if post.comments > 0:
+                if get_comments and post.comments > 0:
                     for comment in post.get_comments():
                         all_comments.append({
                             'post_shortcode': post.shortcode,
