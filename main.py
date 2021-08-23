@@ -41,7 +41,8 @@ def do_login(L):
     """wrapper for instagram login"""
     username = input('What is your Instagram username?')
     try:
-        L.interactive_login(username)
+        # L.interactive_login(username)
+        L.load_session_from_file("humandatascientist")
     except Exception as err:
         print(err)
         do_login(L)
