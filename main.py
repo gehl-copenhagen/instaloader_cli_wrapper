@@ -91,7 +91,7 @@ def period_reduce():
 
 def parse_locations(row):
     """Turn location objects into dictionary for tabular representation."""
-    if row:
+    if row and not pd.isna(row):
         return {
             'loc_id': row.id,
             'loc_lat': row.lat,
@@ -104,7 +104,7 @@ def parse_locations(row):
 
 def ask_n_post_lim():
     """Ask user post limit"""
-    n_post_lim = input("How many posts?")
+    n_post_lim = input("How many posts? ")
     try:
         result = int(n_post_lim)
     except ValueError:
@@ -276,7 +276,7 @@ for query in queries:
             break
 
     def join_iterable(lst):
-        if lst is None:
+        if lst is None or lst == 0:
             return
         if isinstance(lst, str):
             return lst
