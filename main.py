@@ -275,15 +275,21 @@ for query in queries:
             print(e)
             break
 
+    def join_iterable(lst):
+        if lst is None:
+            return
+        if isinstance(lst, str):
+            return lst
+        else:
+            return ','.join(lst) 
+
     # Turn list columns into strings
     data[['caption_hashtags',
           'caption_mentions',
           'tagged_users']] = data[[
               'caption_hashtags',
               'caption_mentions',
-              'tagged_users']].applymap(
-                  lambda lst: ','.join(lst)
-              )
+              'tagged_users']].applymap(join_iterable)
 
     # Turn location column into dicts, then seperate columns
     data['location'] = data['location'].apply(parse_locations)
