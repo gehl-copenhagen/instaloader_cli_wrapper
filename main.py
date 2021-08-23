@@ -223,51 +223,54 @@ for query in queries:
                 posts = (x for _, x in zip(range(n_post_lim), posts))
 
             print(f'\nNow harvesting {query}. Ctrl-C to stop.\n\n')
-            for post in posts:
+            try:
+                for post in posts:
 
-                try:
-                    L.download_post(post, target=query)
-                    post_info = []
-                    for attr in post_attr:
-                        attribute = ''
-                        try:
-                            attribute = getattr(post, attr)
-                        except:
-                            print(f'\n Could not get {attr} for a post...')
-                        else:
-                            post_info.append(attribute)
+                    try:
+                        L.download_post(post, target=query)
+                        post_info = []
+                        for attr in post_attr:
+                            attribute = ''
+                            try:
+                                attribute = getattr(post, attr)
+                            except:
+                                print(f'\n Could not get {attr} for a post...')
+                            else:
+                                post_info.append(attribute)
 
 
-                    # Put postinfo in dataframe
-                    data = data.append(pd.Series(
-                        dict(zip(data.columns, post_info))),
-                                    ignore_index=True)
-                except:
-                    print("Error!")
-                
+                        # Put postinfo in dataframe
+                        data = data.append(pd.Series(
+                            dict(zip(data.columns, post_info))),
+                                        ignore_index=True)
+                    except:
+                        print("Error!")
+                    
 
-                # Get comments
-                if get_comments and post.comments > 0:
-                    for comment in post.get_comments():
-                        all_comments.append({
-                            'post_shortcode': post.shortcode,
-                            'answer_to_comment': '',
-                            'created_at_utc': comment.created_at_utc,
-                            'id': comment.id,
-                            'likes_count': comment.likes_count,
-                            'owner': comment.owner.userid,
-                            'text': comment.text})
-                        if hasattr(comment, 'answers'):
-                            for answer in comment.answers:
-                                all_comments.append({
-                                    'post_shortcode': post.shortcode,
-                                    'answer_to_comment': comment.id,
-                                    'created_at_utc': answer.created_at_utc,
-                                    'id': answer.id,
-                                    'likes_count': answer.likes_count,
-                                    'owner': answer.owner.userid,
-                                    'text': answer.text})
-            break
+                    # Get comments
+                    if get_comments and post.comments > 0:
+                        for comment in post.get_comments():
+                            all_comments.append({
+                                'post_shortcode': post.shortcode,
+                                'answer_to_comment': '',
+                                'created_at_utc': comment.created_at_utc,
+                                'id': comment.id,
+                                'likes_count': comment.likes_count,
+                                'owner': comment.owner.userid,
+                                'text': comment.text})
+                            if hasattr(comment, 'answers'):
+                                for answer in comment.answers:
+                                    all_comments.append({
+                                        'post_shortcode': post.shortcode,
+                                        'answer_to_comment': comment.id,
+                                        'created_at_utc': answer.created_at_utc,
+                                        'id': answer.id,
+                                        'likes_count': answer.likes_count,
+                                        'owner': answer.owner.userid,
+                                        'text': answer.text})
+                break
+            except (TypeError) as e:
+                print(e)
         except (KeyboardInterrupt, InstaloaderException) as e:
             print(e)
             break
