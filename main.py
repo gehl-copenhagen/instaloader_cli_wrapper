@@ -145,6 +145,7 @@ L = instaloader.Instaloader(download_pictures=pictures,
                             download_videos=videos,
                             download_video_thumbnails=thumbnails,
                             compress_json=compress,
+                            dirname_pattern='output/{target}',
                             filename_pattern='{shortcode}')
 
 if LOGIN:
@@ -302,11 +303,11 @@ for query in queries:
     comments_df = pd.DataFrame(all_comments)
 
     # Save data and comments
-    outpath = Path('output')
+    outpath = Path(f'output/{query}')
     outpath.mkdir(exist_ok=True)
 
-    data_filepath = outpath / f'output_{query}.csv'
-    comments_filepath = outpath / f'comments_{query}.csv'
+    data_filepath = f'{outpath}/{query}.csv'
+    comments_filepath = f'{outpath}/{query}_comments.csv'
 
     data.to_csv(data_filepath, index=False)
     comments_df.to_csv(comments_filepath)
