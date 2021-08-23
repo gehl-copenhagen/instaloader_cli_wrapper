@@ -10,6 +10,9 @@ import pandas as pd
 from pick import pick
 import instaloader
 from instaloader import Profile, InstaloaderException
+import logging
+
+logging.basicConfig(filename='log.log', encoding='utf-8', level=logging.INFO)
 
 
 def query_yes_no(question, default="yes"):
@@ -44,7 +47,7 @@ def do_login(L):
         # L.interactive_login(username)
         L.load_session_from_file("humandatascientist")
     except Exception as err:
-        print(err)
+        logging.error(err)
         do_login(L)
         
 
@@ -80,9 +83,9 @@ def period_reduce():
         SINCE = datetime.strptime(date_entry1, '%Y-%m-%d')
         UNTIL = datetime.strptime(date_entry2, '%Y-%m-%d')
     except ValueError:
-        print("Invald date. Try again.\n")
+        logging.error("Invald date. Try again.\n")
         return period_reduce()
-    print('\nBeginning harvest...\n\n')
+    logging.info('\nBeginning harvest...\n\n')
     limited_posts = takewhile(lambda p: p.date > UNTIL,
                               dropwhile(lambda p: p.date > SINCE,
                                         posts))
@@ -225,7 +228,6 @@ for query in queries:
             print(f'\nNow harvesting {query}. Ctrl-C to stop.\n\n')
             try:
                 for post in posts:
-
                     try:
                         L.download_post(post, target=query)
                         post_info = []
@@ -243,8 +245,8 @@ for query in queries:
                         data = data.append(pd.Series(
                             dict(zip(data.columns, post_info))),
                                         ignore_index=True)
-                    except:
-                        print("Error!")
+                    except Exception as e:
+                        logging.error(e)
                     
 
                     # Get comments
@@ -270,9 +272,9 @@ for query in queries:
                                         'text': answer.text})
                 break
             except (TypeError) as e:
-                print(e)
+                logging.error(e)
         except (KeyboardInterrupt, InstaloaderException) as e:
-            print(e)
+            logging.error(e)
             break
 
     def join_iterable(lst):
