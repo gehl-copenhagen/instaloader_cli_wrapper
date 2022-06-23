@@ -6,7 +6,7 @@ debugpy==1.4.1
 decorator==5.0.9
 entrypoints==0.3
 idna==2.8
-instaloader==4.7.1
+instaloader @ git+https://github.com/instaloader/instaloader@2c116683c2fd7cf17aef4e2c597900cf2da50331
 ipykernel==6.2.0
 ipython==7.26.0
 ipython-genutils==0.2.0
